@@ -42,8 +42,10 @@
             this.txt_Price = new System.Windows.Forms.TextBox();
             this.txt_Note = new System.Windows.Forms.TextBox();
             this.btn_Add = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label_Kol = new System.Windows.Forms.Label();
+            this.label_TPrice = new System.Windows.Forms.Label();
+            this.btn_Edit = new System.Windows.Forms.Button();
+            this.txt_Id = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,6 +64,7 @@
             // 
             // txt_Kod
             // 
+            this.txt_Kod.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.txt_Kod.Location = new System.Drawing.Point(12, 489);
             this.txt_Kod.Name = "txt_Kod";
             this.txt_Kod.Size = new System.Drawing.Size(100, 20);
@@ -69,6 +72,7 @@
             // 
             // txt_Leather
             // 
+            this.txt_Leather.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.txt_Leather.Location = new System.Drawing.Point(146, 489);
             this.txt_Leather.Name = "txt_Leather";
             this.txt_Leather.Size = new System.Drawing.Size(100, 20);
@@ -76,6 +80,7 @@
             // 
             // txt_Color
             // 
+            this.txt_Color.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.txt_Color.Location = new System.Drawing.Point(275, 489);
             this.txt_Color.Name = "txt_Color";
             this.txt_Color.Size = new System.Drawing.Size(100, 20);
@@ -162,31 +167,50 @@
             this.btn_Add.UseVisualStyleBackColor = true;
             this.btn_Add.Click += new System.EventHandler(this.btn_Add_Click);
             // 
-            // label1
+            // label_Kol
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(876, 489);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 15;
-            this.label1.Text = "label1";
+            this.label_Kol.AutoSize = true;
+            this.label_Kol.Location = new System.Drawing.Point(876, 489);
+            this.label_Kol.Name = "label_Kol";
+            this.label_Kol.Size = new System.Drawing.Size(35, 13);
+            this.label_Kol.TabIndex = 15;
+            this.label_Kol.Text = "label1";
             // 
-            // label2
+            // label_TPrice
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1008, 489);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
-            this.label2.TabIndex = 16;
-            this.label2.Text = "label2";
+            this.label_TPrice.AutoSize = true;
+            this.label_TPrice.Location = new System.Drawing.Point(1008, 489);
+            this.label_TPrice.Name = "label_TPrice";
+            this.label_TPrice.Size = new System.Drawing.Size(35, 13);
+            this.label_TPrice.TabIndex = 16;
+            this.label_TPrice.Text = "label2";
+            // 
+            // btn_Edit
+            // 
+            this.btn_Edit.Location = new System.Drawing.Point(1011, 622);
+            this.btn_Edit.Name = "btn_Edit";
+            this.btn_Edit.Size = new System.Drawing.Size(75, 23);
+            this.btn_Edit.TabIndex = 17;
+            this.btn_Edit.Text = "Edit";
+            this.btn_Edit.UseVisualStyleBackColor = true;
+            this.btn_Edit.Click += new System.EventHandler(this.btn_Edit_Click);
+            // 
+            // txt_Id
+            // 
+            this.txt_Id.Location = new System.Drawing.Point(50, 561);
+            this.txt_Id.Name = "txt_Id";
+            this.txt_Id.Size = new System.Drawing.Size(100, 20);
+            this.txt_Id.TabIndex = 18;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1292, 687);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txt_Id);
+            this.Controls.Add(this.btn_Edit);
+            this.Controls.Add(this.label_TPrice);
+            this.Controls.Add(this.label_Kol);
             this.Controls.Add(this.btn_Add);
             this.Controls.Add(this.txt_Note);
             this.Controls.Add(this.txt_Price);
@@ -226,8 +250,10 @@
         private System.Windows.Forms.TextBox txt_Price;
         private System.Windows.Forms.TextBox txt_Note;
         private System.Windows.Forms.Button btn_Add;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label_Kol;
+        private System.Windows.Forms.Label label_TPrice;
+        private System.Windows.Forms.Button btn_Edit;
+        private System.Windows.Forms.TextBox txt_Id;
     }
 }
 

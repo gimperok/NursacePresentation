@@ -83,7 +83,7 @@ namespace FinalOrder
         {
             if (e.RowIndex >= 0)
             {
-
+               txt_Id.Text = dgv[0, e.RowIndex].Value.ToString();
                txt_Kod.Text = dgv[1, e.RowIndex].Value.ToString();
                txt_Leather.Text = dgv[2, e.RowIndex].Value.ToString();
                txt_Color.Text = dgv[3, e.RowIndex].Value.ToString();
@@ -120,9 +120,9 @@ namespace FinalOrder
                         && int.TryParse(txt_41.Text, out txt41) && decimal.TryParse(txt_Price.Text, out txtPrice))
                     {
                         txtKol = txt35 + txt36 + txt37 + txt38 + txt39 + txt40 + txt41;
-                        label1.Text = txtKol.ToString();
+                        label_Kol.Text = txtKol.ToString();
 
-                        txtTPrice = Convert.ToDecimal(label2.Text);
+                        txtTPrice = Convert.ToDecimal(label_TPrice.Text);
 
 
                         var addQuery = "INSERT INTO OrderTable (Kod, Leather, Color, s35, s36, s37, s38, s39, s40, s41, Total, Price, TPrice, Note) " +
@@ -187,14 +187,14 @@ namespace FinalOrder
             int.TryParse(txt_41.Text, out g);
             int res = a + b + c + d + e + f + g;
 
-            label1.Text = Convert.ToString(res);
+            label_Kol.Text = Convert.ToString(res);
 
             decimal x, y;
             decimal.TryParse(txt_Price.Text, out x);
-            decimal.TryParse(label1.Text, out y);
+            decimal.TryParse(label_Kol.Text, out y);
             decimal res1 = x * y;
 
-            label2.Text = Convert.ToString(res1);
+            label_TPrice.Text = Convert.ToString(res1);
         }
         private void txt_35_TextChanged(object sender, EventArgs e)
         {
@@ -234,6 +234,42 @@ namespace FinalOrder
         private void txt_Price_TextChanged(object sender, EventArgs e)
         {
             resLabel();
+        }
+
+        private async void btn_Edit_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                await connect.OpenAsync();
+
+                if (!string.IsNullOrEmpty(txt_Kod.Text) && !string.IsNullOrWhiteSpace(txt_Kod.Text)
+                && !string.IsNullOrEmpty(txt_Leather.Text) && !string.IsNullOrWhiteSpace(txt_Leather.Text)
+                && !string.IsNullOrEmpty(txt_Color.Text) && !string.IsNullOrWhiteSpace(txt_Color.Text))
+                {
+                    //string editQuery = "UPDATE [OrderTable] SET [Kod]=@Kod, [Leather]=@Leather, [Color]=@Color, [S35]=@S35, [S36]=@S36, [S37]=@S37, [S38]=@S38, [S39]=@S39, [S40]=@S40, [S41]=@S41, [Price]=@Price, [Note]=@Note WHERE [Id]=@Id";
+                    //SqlCommand command = new SqlCommand(editQuery, connect);
+
+                    //command.Parameters.AddWithValue("Id",txt_Id.Text);
+                    //command.Parameters.AddWithValue("Kod", txt_Kod.Text);
+                    //command.Parameters.AddWithValue("Leather", txt_Leather.Text);
+                    //command.Parameters.AddWithValue("Color", txt_Color.Text);
+                    //command.Parameters.AddWithValue("S35", txt_35.Text);
+                    //command.Parameters.AddWithValue("S36", txt_36.Text);
+                    //command.Parameters.AddWithValue("S37", txt_37.Text);
+                    //command.Parameters.AddWithValue("S38", txt_38.Text);
+                    //command.Parameters.AddWithValue("S39", txt_39.Text);
+                    //command.Parameters.AddWithValue("S40", txt_40.Text);
+                    //command.Parameters.AddWithValue("S41", txt_41.Text);
+                    ////command.Parameters.AddWithValue("Total", label_Kol.Text);
+                    //command.Parameters.AddWithValue("Price", txt_Price.Text);
+                    ////command.Parameters.AddWithValue("TPrice", label_TPrice.Text);
+                    //command.Parameters.AddWithValue("Note", txt_Note.Text);
+
+                    //await command.ExecuteNonQueryAsync();
+
+                    //RefreshDgv(dgv);
+                }
+            }
         }
     }
 }
