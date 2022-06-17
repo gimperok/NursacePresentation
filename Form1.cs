@@ -13,17 +13,22 @@ namespace FinalOrder
 {
     public partial class Form1 : Form
     {
-        //DataBase database = new DataBase();
-        string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=OrderDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        
+        string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=OrderDB;Integrated Security=True;
+                                    Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;
+                                    ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         public Form1()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
         }
-        private void Form1_Load(object sender, EventArgs e)
+
+        private void Form1_Load(object sender, EventArgs e)  //загрузка главной формы
         {
             CreateColumn();
             RefreshDgv(dgv);
+            string dateString = DateTime.Now.ToShortDateString();
+            label_Date.Text = dateString;
         }
 
         private void CreateColumn()  //создание колонок в DGV
@@ -44,6 +49,7 @@ namespace FinalOrder
             dgv.Columns.Add("TPrice", "Total Price");
             dgv.Columns.Add("Note", "Note");
         }
+
         private void ReadSingleRow(DataGridView dgv, IDataRecord record)
         {
             dgv.Rows.Add(record.GetInt32(0), record.GetString(1), record.GetString(2), record.GetString(3),
@@ -55,6 +61,18 @@ namespace FinalOrder
         private void btn_Add_Click(object sender, EventArgs e) //кнопка добавления новой записи
         {
             AddNote();
+            RefreshDgv(dgv);
+        }
+
+        private void btn_Edit_Click(object sender, EventArgs e) //кнопка редактирования выбранной записи
+        {
+            EditNote();
+            RefreshDgv(dgv);
+        }
+
+        private void btn_Del_Click(object sender, EventArgs e) //кнопка удаления выбранной записи
+        {
+            DelNote();
             RefreshDgv(dgv);
         }
 
@@ -100,11 +118,11 @@ namespace FinalOrder
         }
 
 
-        private void AddNote() //запрос к бд на ДОБАВЛЕНИЕ данных 
+        private async void AddNote()   //запрос к бд на ДОБАВЛЕНИЕ данных 
         {
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
-                connect.Open();
+                await connect.OpenAsync();
 
                 var kod = txt_Kod.Text.ToUpper();
                 var leather = txt_Leather.Text.ToUpper();
@@ -131,21 +149,21 @@ namespace FinalOrder
 
                         SqlCommand command = new SqlCommand(addQuery, connect);
 
-                        command.Parameters.AddWithValue("@kod", kod);
+                        command.Parameters.AddWithValue("@kod",     kod);
                         command.Parameters.AddWithValue("@leather", leather);
-                        command.Parameters.AddWithValue("@color", color);
-                        command.Parameters.AddWithValue("@txt35", txt35);
-                        command.Parameters.AddWithValue("@txt36", txt36);
-                        command.Parameters.AddWithValue("@txt37", txt37);
-                        command.Parameters.AddWithValue("@txt38", txt38);
-                        command.Parameters.AddWithValue("@txt39", txt39);
-                        command.Parameters.AddWithValue("@txt40", txt40);
-                        command.Parameters.AddWithValue("@txt41", txt41);
-                        command.Parameters.AddWithValue("@txtKol", txtKol);
-                        command.Parameters.AddWithValue("@txtPrice", txtPrice);
+                        command.Parameters.AddWithValue("@color",   color);
+                        command.Parameters.AddWithValue("@txt35",   txt35);
+                        command.Parameters.AddWithValue("@txt36",   txt36);
+                        command.Parameters.AddWithValue("@txt37",   txt37);
+                        command.Parameters.AddWithValue("@txt38",   txt38);
+                        command.Parameters.AddWithValue("@txt39",   txt39);
+                        command.Parameters.AddWithValue("@txt40",   txt40);
+                        command.Parameters.AddWithValue("@txt41",   txt41);
+                        command.Parameters.AddWithValue("@txtKol",  txtKol);
+                        command.Parameters.AddWithValue("@txtPrice",  txtPrice);
                         command.Parameters.AddWithValue("@txtTPrice", txtTPrice);
-                        command.Parameters.AddWithValue("@txtNote", txtNote);
-                        command.ExecuteNonQuery();
+                        command.Parameters.AddWithValue("@txtNote",   txtNote);
+                  await command.ExecuteNonQueryAsync();
 
                         ClearTextBox();
                     }
@@ -158,7 +176,74 @@ namespace FinalOrder
             }
         }
 
-        private void ClearTextBox()
+        private async void EditNote()  //запрос к бд на ИЗМЕНЕНИЕ данных
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                await connect.OpenAsync();
+
+                if (!string.IsNullOrEmpty(txt_Kod.Text) && !string.IsNullOrWhiteSpace(txt_Kod.Text)
+                && !string.IsNullOrEmpty(txt_Leather.Text) && !string.IsNullOrWhiteSpace(txt_Leather.Text)
+                && !string.IsNullOrEmpty(txt_Color.Text) && !string.IsNullOrWhiteSpace(txt_Color.Text))
+                {
+                    decimal dcmPrice = Convert.ToDecimal(txt_Price.Text);
+                    decimal dcmTPrice = Convert.ToDecimal(label_TPrice.Text);
+
+                    string editQuery = "UPDATE OrderTable " +
+                                                          "SET [Kod]=@Kod, [Leather]=@Leather, [Color]=@Color, " +
+                                                              "[S35]=@S35, [S36]=@S36, [S37]=@S37, [S38]=@S38, [S39]=@S39, [S40]=@S40, [S41]=@S41, " +
+                                                              "[Total]=@Total, [Price]=@Price, [TPrice]=@TPrice, [Note]=@Note " +
+                                                        "WHERE [Id]=@id";
+
+                    SqlCommand command = new SqlCommand(editQuery, connect);
+
+                    command.Parameters.AddWithValue("id", txt_Id.Text);
+                    command.Parameters.AddWithValue("Kod", txt_Kod.Text);
+                    command.Parameters.AddWithValue("Leather", txt_Leather.Text);
+                    command.Parameters.AddWithValue("Color", txt_Color.Text);
+                    command.Parameters.AddWithValue("S35", txt_35.Text);
+                    command.Parameters.AddWithValue("S36", txt_36.Text);
+                    command.Parameters.AddWithValue("S37", txt_37.Text);
+                    command.Parameters.AddWithValue("S38", txt_38.Text);
+                    command.Parameters.AddWithValue("S39", txt_39.Text);
+                    command.Parameters.AddWithValue("S40", txt_40.Text);
+                    command.Parameters.AddWithValue("S41", txt_41.Text);
+                    command.Parameters.AddWithValue("Total", label_Kol.Text);
+                    command.Parameters.AddWithValue("Price", dcmPrice);
+                    command.Parameters.AddWithValue("TPrice", dcmTPrice);
+                    command.Parameters.AddWithValue("Note", txt_Note.Text);
+
+                    await command.ExecuteNonQueryAsync();
+                }
+                connect.Close();
+            }
+        }
+
+        private async void DelNote()
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                await connect.OpenAsync();
+
+                if (!string.IsNullOrEmpty(txt_Id.Text) &&
+                    !string.IsNullOrWhiteSpace(txt_Id.Text))
+                {
+                    string delQuery = "DELETE FROM OrderTable WHERE [Id]=@id";
+
+                    SqlCommand command = new SqlCommand(delQuery, connect);
+                    command.Parameters.AddWithValue("id", txt_Id.Text);
+                    
+                    var result = MessageBox.Show("Вы действительно хотите удалить запись?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    if (result == DialogResult.Yes)
+                        await command.ExecuteNonQueryAsync();
+
+                }
+                connect.Close();
+            }
+        }
+
+        private void ClearTextBox()   //очистка всех текстбоксов
         {
             txt_Kod.Clear();
             txt_Leather.Clear();
@@ -173,9 +258,8 @@ namespace FinalOrder
             txt_Price.Clear();
             txt_Note.Clear();
         }
-
-        //отвечает за работу label1 и label2
-        private void resLabel()
+  
+        private void resLabel()  //отвечает за работу label1 и label2
         {
             int a, b, c, d, e, f, g;
             int.TryParse(txt_35.Text, out a);
@@ -196,6 +280,22 @@ namespace FinalOrder
 
             label_TPrice.Text = Convert.ToString(res1);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         private void txt_35_TextChanged(object sender, EventArgs e)
         {
             resLabel();
@@ -236,40 +336,5 @@ namespace FinalOrder
             resLabel();
         }
 
-        private async void btn_Edit_Click(object sender, EventArgs e)
-        {
-            using (SqlConnection connect = new SqlConnection(connectionString))
-            {
-                await connect.OpenAsync();
-
-                if (!string.IsNullOrEmpty(txt_Kod.Text) && !string.IsNullOrWhiteSpace(txt_Kod.Text)
-                && !string.IsNullOrEmpty(txt_Leather.Text) && !string.IsNullOrWhiteSpace(txt_Leather.Text)
-                && !string.IsNullOrEmpty(txt_Color.Text) && !string.IsNullOrWhiteSpace(txt_Color.Text))
-                {
-                    //string editQuery = "UPDATE [OrderTable] SET [Kod]=@Kod, [Leather]=@Leather, [Color]=@Color, [S35]=@S35, [S36]=@S36, [S37]=@S37, [S38]=@S38, [S39]=@S39, [S40]=@S40, [S41]=@S41, [Price]=@Price, [Note]=@Note WHERE [Id]=@Id";
-                    //SqlCommand command = new SqlCommand(editQuery, connect);
-
-                    //command.Parameters.AddWithValue("Id",txt_Id.Text);
-                    //command.Parameters.AddWithValue("Kod", txt_Kod.Text);
-                    //command.Parameters.AddWithValue("Leather", txt_Leather.Text);
-                    //command.Parameters.AddWithValue("Color", txt_Color.Text);
-                    //command.Parameters.AddWithValue("S35", txt_35.Text);
-                    //command.Parameters.AddWithValue("S36", txt_36.Text);
-                    //command.Parameters.AddWithValue("S37", txt_37.Text);
-                    //command.Parameters.AddWithValue("S38", txt_38.Text);
-                    //command.Parameters.AddWithValue("S39", txt_39.Text);
-                    //command.Parameters.AddWithValue("S40", txt_40.Text);
-                    //command.Parameters.AddWithValue("S41", txt_41.Text);
-                    ////command.Parameters.AddWithValue("Total", label_Kol.Text);
-                    //command.Parameters.AddWithValue("Price", txt_Price.Text);
-                    ////command.Parameters.AddWithValue("TPrice", label_TPrice.Text);
-                    //command.Parameters.AddWithValue("Note", txt_Note.Text);
-
-                    //await command.ExecuteNonQueryAsync();
-
-                    //RefreshDgv(dgv);
-                }
-            }
-        }
     }
 }
