@@ -5,9 +5,11 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 namespace FinalOrder
 {
@@ -17,6 +19,7 @@ namespace FinalOrder
         string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=OrderDB;Integrated Security=True;
                                     Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;
                                     ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        int nomerOrd = 0;
         public Form1()
         {
             InitializeComponent();
@@ -25,10 +28,17 @@ namespace FinalOrder
 
         private void Form1_Load(object sender, EventArgs e)  //загрузка главной формы
         {
+            //dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
             CreateColumn();
             RefreshDgv(dgv);
             string dateString = DateTime.Now.ToShortDateString();
-            label_Date.Text = dateString;
+            label_Date.Text = "Date: " + dateString;
+            nomerOrd++;
+            label_NomOrd.Text = "Nomer: " + nomerOrd.ToString();
+            // dgv.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+
+
         }
 
         private void CreateColumn()  //создание колонок в DGV
@@ -48,6 +58,38 @@ namespace FinalOrder
             dgv.Columns.Add("Price", "Price");
             dgv.Columns.Add("TPrice", "Total Price");
             dgv.Columns.Add("Note", "Note");
+
+            this.dgv.Columns[0].Width = 40;
+            this.dgv.Columns[0].Visible = false;
+
+            this.dgv.Columns[1].Width = 115;
+            this.dgv.Columns[2].Width = 200;
+            this.dgv.Columns[3].Width = 150;
+            this.dgv.Columns[4].Width = 35;
+            this.dgv.Columns[5].Width = 35;
+            this.dgv.Columns[6].Width = 35;
+            this.dgv.Columns[7].Width = 35;
+            this.dgv.Columns[8].Width = 35;
+            this.dgv.Columns[9].Width = 35;
+            this.dgv.Columns[10].Width = 30;
+            this.dgv.Columns[11].Width = 55;
+            this.dgv.Columns[12].Width = 65;
+            this.dgv.Columns[13].Width = 75;
+            this.dgv.Columns[14].Width = 300;
+
+            this.dgv.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            this.dgv.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            this.dgv.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            this.dgv.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            this.dgv.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            this.dgv.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            this.dgv.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            this.dgv.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            this.dgv.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            this.dgv.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
+            
+
+
         }
 
         private void ReadSingleRow(DataGridView dgv, IDataRecord record)
@@ -94,9 +136,28 @@ namespace FinalOrder
                     ReadSingleRow(dgv, reader);
                 }
                 reader.Close();
+
+                string sumQuery = "SELECT SUM([TPrice]) FROM [OrderTable]";
+                SqlCommand command1 = new SqlCommand(sumQuery, connect); 
+                object summa = command1.ExecuteScalar();
+                decimal sum = Convert.ToDecimal(summa);
+                label1.Text = "Колличество позиций: " + dgv.Rows.Count.ToString();
+                label2.Text = "Общаяя сумма заказа:" + sum.ToString() + "$";
+                label3.Text = "Залог: " + (sum/100*30) + "$";
+                connect.Close();
+
             }
+
+
+            //label2.Text = sum.ToString();
+
+
+
+            //label1.Text = "Колличество позиций: " + dgv.Rows.Count.ToString();
+            //label2.Text = "Общаяя сумма заказа:" + sum.ToString();
+
         }
-        
+
         private void dgv_CellClick(object sender, DataGridViewCellEventArgs e) //вставка элементов в textbox'ы при клике по ячейке
         {
             if (e.RowIndex >= 0)
@@ -176,11 +237,11 @@ namespace FinalOrder
             }
         }
 
-        private async void EditNote()  //запрос к бд на ИЗМЕНЕНИЕ данных
+        private void EditNote()  //запрос к бд на ИЗМЕНЕНИЕ данных
         {
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
-                await connect.OpenAsync();
+                connect.OpenAsync();
 
                 if (!string.IsNullOrEmpty(txt_Kod.Text) && !string.IsNullOrWhiteSpace(txt_Kod.Text)
                 && !string.IsNullOrEmpty(txt_Leather.Text) && !string.IsNullOrWhiteSpace(txt_Leather.Text)
@@ -213,7 +274,7 @@ namespace FinalOrder
                     command.Parameters.AddWithValue("TPrice", dcmTPrice);
                     command.Parameters.AddWithValue("Note", txt_Note.Text);
 
-                    await command.ExecuteNonQueryAsync();
+                    command.ExecuteNonQuery();
                 }
                 connect.Close();
             }
@@ -283,18 +344,7 @@ namespace FinalOrder
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+        #region Sizes
 
         private void txt_35_TextChanged(object sender, EventArgs e)
         {
@@ -335,6 +385,14 @@ namespace FinalOrder
         {
             resLabel();
         }
+        #endregion
 
+        private void btn_Client_Click(object sender, EventArgs e)
+        {
+            new ClientsForm(this).Show();
+        }
+
+   
     }
+    
 }
