@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 
 namespace FinalOrder
@@ -392,7 +394,100 @@ namespace FinalOrder
             new ClientsForm(this).Show();
         }
 
-   
+        private void btn_Excel_Click(object sender, EventArgs e)
+        {
+            ExcelPrint();
+        }
+
+
+
+        private void ExcelPrint()
+        {
+
+            if (dgv.Rows.Count > 0)
+            {
+                Excel.Application exApp = new Excel.Application();  //Объявляю приложение
+
+                exApp.Workbooks.Add();  //Добавляю рабочую книгу
+
+                Microsoft.Office.Interop.Excel.Worksheet wsh = (Microsoft.Office.Interop.Excel.Worksheet)exApp.ActiveSheet;  //Получаю первый лист документа
+
+                int i, j;
+                for (i = 0; i <= dgv.RowCount - 1; i++)  //цикл перебора строк
+                {
+                    for (j = 1; j <= dgv.ColumnCount - 1; j++)  //цикл перебора колонок
+                    {
+                        wsh.Cells[6, j] = dgv.Columns[j].HeaderText.ToString();
+
+                        wsh.Cells[i + 7, j] = dgv[j, i].Value.ToString();
+                    }
+                }
+
+
+                wsh.Range[wsh.Cells[1, 1], wsh.Cells[1, 4]].MergeCells = true;
+                wsh.Range[wsh.Cells[2, 1], wsh.Cells[2, 4]].MergeCells = true;
+                wsh.Range[wsh.Cells[3, 1], wsh.Cells[3, 4]].MergeCells = true;
+                wsh.Range[wsh.Cells[4, 1], wsh.Cells[4, 4]].MergeCells = true;
+
+                wsh.Range[wsh.Cells[1, 11], wsh.Cells[1, 14]].MergeCells = true;
+                wsh.Range[wsh.Cells[2, 11], wsh.Cells[2, 14]].MergeCells = true;
+                wsh.Range[wsh.Cells[3, 11], wsh.Cells[3, 14]].MergeCells = true;
+                wsh.Range[wsh.Cells[4, 11], wsh.Cells[4, 14]].MergeCells = true;
+
+
+                wsh.Range[wsh.Cells[1, 1], wsh.Cells[1, 4]].Value = label_Name_Sur.Text;
+                wsh.Range[wsh.Cells[2, 1], wsh.Cells[2, 4]].Value = label_Country_City.Text;
+                wsh.Range[wsh.Cells[3, 1], wsh.Cells[3, 4]].Value = label_Tel.Text;
+                wsh.Range[wsh.Cells[4, 1], wsh.Cells[4, 4]].Value = label_Cargo.Text;
+
+                wsh.Range[wsh.Cells[1, 11], wsh.Cells[1, 14]].Value = label_Date.Text;
+                wsh.Range[wsh.Cells[2, 11], wsh.Cells[2, 14]].Value = label_NomOrd.Text;
+                wsh.Range[wsh.Cells[3, 11], wsh.Cells[3, 14]].Value = label_Tel.Text;
+                wsh.Range[wsh.Cells[4, 11], wsh.Cells[4, 14]].Value = label_Cargo.Text;
+
+                string fname = @"D:\\nscLogo.png";
+                wsh.Shapes.AddPicture(fname, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoCTrue, 240, 0, 125, 60);
+
+
+
+
+                Excel.Range range1 = wsh.Range[wsh.Cells[1, 1], wsh.Cells[4, 4]];
+
+
+                range1.Borders.get_Item(Excel.XlBordersIndex.xlEdgeBottom).LineStyle = Excel.XlLineStyle.xlSlantDashDot;
+                range1.Borders.get_Item(Excel.XlBordersIndex.xlEdgeRight).LineStyle = Excel.XlLineStyle.xlContinuous;
+                range1.Borders.get_Item(Excel.XlBordersIndex.xlInsideHorizontal).LineStyle = Excel.XlLineStyle.xlContinuous;
+                range1.Borders.get_Item(Excel.XlBordersIndex.xlInsideVertical).LineStyle = Excel.XlLineStyle.xlContinuous;
+                range1.Borders.get_Item(Excel.XlBordersIndex.xlEdgeTop).LineStyle = Excel.XlLineStyle.xlContinuous;
+
+                Excel.Range range2 = wsh.Range[wsh.Cells[1, 11], wsh.Cells[4, 14]];
+
+                range2.Borders.get_Item(Excel.XlBordersIndex.xlEdgeBottom).LineStyle = Excel.XlLineStyle.xlContinuous;
+                range2.Borders.get_Item(Excel.XlBordersIndex.xlEdgeRight).LineStyle = Excel.XlLineStyle.xlContinuous;
+                range2.Borders.get_Item(Excel.XlBordersIndex.xlInsideHorizontal).LineStyle = Excel.XlLineStyle.xlContinuous;
+                range2.Borders.get_Item(Excel.XlBordersIndex.xlInsideVertical).LineStyle = Excel.XlLineStyle.xlContinuous;
+                range2.Borders.get_Item(Excel.XlBordersIndex.xlEdgeTop).LineStyle = Excel.XlLineStyle.xlContinuous;
+
+                // РАБОТАЮ С ГРАНИЦАМИ ТАБЛИЦ ПО ЭТОЙ ССЫЛКЕ:    https://razilov-code.ru/2017/12/13/microsoft-office-interop-excel/
+
+
+                exApp.Visible = true;
+
+                        }
+
+
+                    //(wsh.Cells[1, 1] as Excel.Range).Font.Bold = true;
+                    //(wsh.Cells[1, 1] as Excel.Range).Font.Size = 12;
+                    //(wsh.Cells[1, 1] as Excel.Range).HorizontalAlignment = -4108;
+                    //(wsh.Cells[1, 2] as Excel.Range).Font.Bold = true;
+                    //(wsh.Cells[1, 2] as Excel.Range).Font.Size = 12;
+                    //(wsh.Cells[1, 2] as Excel.Range).HorizontalAlignment = -4108;
+                    //(wsh.Cells[1, 3] as Excel.Range).Font.Bold = true;
+                    //(wsh.Cells[1, 3] as Excel.Range).Font.Size = 12;
+                    //(wsh.Cells[1, 3] as Excel.Range).HorizontalAlignment = -4108;
+
+                
+        }
     }
     
 }
