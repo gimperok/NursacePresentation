@@ -17,16 +17,27 @@ namespace FinalOrder
                                     Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;
                                     ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         Form1 form1;
+        IDataRecord record = null;
         public ClientsForm(Form1 owner)
         {
             form1 = owner;
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
-
         }
 
+        private void ClientsForm_Load(object sender, EventArgs e)  //при загрузке формы создаются колонки и обновляется DGV Client
+        {
+            CreateColumnClients();
+            RefreshClintsDgv(dgv_Clients);
+        }
 
-        private void CreateClientsColumnClients()  //создание колонок в DGV
+        private void ClientsForm_Click(object sender, EventArgs e) //при клике по пустому месту на форме чистит текстбоксы и сбрасывает маркер строки в DGV Client
+        {
+            ClearTextBox();
+            dgv_Clients.ClearSelection();
+        }
+
+        private void CreateColumnClients()                                               //создание колонок в DGV Client
         {
             dgv_Clients.Columns.Add("Id", "Id");
             dgv_Clients.Columns.Add("Name", "Name");
@@ -36,43 +47,25 @@ namespace FinalOrder
             dgv_Clients.Columns.Add("Tel", "Tel");
             dgv_Clients.Columns.Add("Cargo", "Cargo");
 
-
             this.dgv_Clients.Columns[0].Width = 40;
             this.dgv_Clients.Columns[0].Visible = false;
-            this.dgv_Clients.Columns[1].Width = 80;
-            this.dgv_Clients.Columns[2].Width = 200;
-            this.dgv_Clients.Columns[3].Width = 125;
-            this.dgv_Clients.Columns[4].Width = 125;
+            this.dgv_Clients.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            this.dgv_Clients.Columns[2].Width = 160;
+            this.dgv_Clients.Columns[3].Width = 135;
+            this.dgv_Clients.Columns[4].Width = 110;
             this.dgv_Clients.Columns[5].Width = 125;
             this.dgv_Clients.Columns[6].Width = 125;
-
-
-            //this.dgv_Clients.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-            //this.dgv_Clients.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-            //this.dgv_Clients.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-            //this.dgv_Clients.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-            //this.dgv_Clients.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-            //this.dgv_Clients.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-            //this.dgv_Clients.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-            //this.dgv_Clients.Columns[11].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-            //this.dgv_Clients.Columns[12].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-            //this.dgv_Clients.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopCenter;
-
-
-
         }
-        IDataRecord record = null;
-        private void ReadSingleRow(DataGridView dgv_Clients, IDataRecord record)
+
+        private void ReadSingleRow(DataGridView dgv_Clients, IDataRecord record)         //заполнение ячеек в DGV Client
         {
-            dgv_Clients.Rows.Add(record.GetInt32(0),  record.GetString(1),
+            dgv_Clients.Rows.Add(record.GetInt32(0), record.GetString(1),
                                  record.GetString(2), record.GetString(3),
                                  record.GetString(4), record.GetString(5),
                                  record.GetString(6));
         }
 
-
-
-        private async void RefreshClintsDgv(DataGridView dgv_Clients) //обновление DGV
+        private async void RefreshClintsDgv(DataGridView dgv_Clients)                    //обновление DGV Client
         {
             dgv_Clients.Rows.Clear();
 
@@ -93,13 +86,7 @@ namespace FinalOrder
             }
         }
 
-        private void ClientsForm_Load(object sender, EventArgs e)
-        {
-            CreateClientsColumnClients();
-            RefreshClintsDgv(dgv_Clients);
-        }
-
-        private void dgv_Clients_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgv_Clients_CellClick(object sender, DataGridViewCellEventArgs e)   //при клике по пустому месту на форме очищаются текстбоксы и выборка в DGV Client
         {
             if (e.RowIndex >= 0)
             {
@@ -113,21 +100,13 @@ namespace FinalOrder
             }
         }
 
-        private void btn_Select_Client_Click(object sender, EventArgs e)
-        {
-            form1.label_Name_Sur.Text = txt_Name.Text + " " + txt_Surname.Text;
-            form1.label_Country_City.Text = txt_Country.Text + " " + txt_City.Text;
-            form1.label_Tel.Text = txt_Tel.Text;
-            form1.label_Cargo.Text = txt_Cargo.Text;
-            this.Close();
-        }
 
-        private void txt_Search_TextChanged(object sender, EventArgs e)
+        private void txt_Search_TextChanged(object sender, EventArgs e)   //вызов метода поиска по бд клиентов
         {
             Search(dgv_Clients);
         }
 
-        private async void Search(DataGridView dgv_Clients)
+        private async void Search(DataGridView dgv_Clients)               //метод поиска по бд клиентов
         {
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
@@ -146,30 +125,92 @@ namespace FinalOrder
             }
         }
 
-        private void bmt_New_Client_Click(object sender, EventArgs e)
+
+        private void bmt_New_Client_Click(object sender, EventArgs e)     //кнопка для ДОБАВЛЕНИЯ в бд нового клиента
         {
-            NewClient newClient = new NewClient();
-            newClient.Show();
+            AddClient();
+            RefreshClintsDgv(dgv_Clients);
         }
 
-        private void btn_Edit_Client_Click(object sender, EventArgs e)
+        private void btn_Edit_Client_Click(object sender, EventArgs e)    //кнопка для ИЗМЕНЕНИЯ в бд данных о клиенте
         {
             Edit();
             RefreshClintsDgv(dgv_Clients);
         }
 
-        private void Edit()
+        private void btn_Del_Client_Click(object sender, EventArgs e)     //кнопка для УДАЛЕНИЯ клиента из бд
         {
+            Del();
+            RefreshClintsDgv(dgv_Clients);
+        }
 
+        private void btn_Select_Client_Click(object sender, EventArgs e)  //перенос данных с текстбоксов на форму "родитель"
+        {
+            form1.label_Name_Sur.Text = txt_Name.Text + " " + txt_Surname.Text;
+            form1.label_Country_City.Text = txt_Country.Text + " " + txt_City.Text;
+            form1.label_Tel.Text = txt_Tel.Text;
+            form1.label_Cargo.Text = txt_Cargo.Text;
+            this.Close();
+        }
+
+
+        private void AddClient()   //метод для добавления в бд нового клиента
+        {
+            if (CheckClient())
+            {
+                using (SqlConnection connect = new SqlConnection(connectionString))
+                {
+                    connect.Open();
+
+                    string name = txt_Name.Text.ToUpper();
+                    string surname = txt_Surname.Text.ToUpper();
+                    string country = txt_Country.Text.ToUpper();
+                    string city = txt_City.Text.ToUpper();
+                    string tel = txt_Tel.Text;
+                    string cargo = txt_Cargo.Text;
+
+                    if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname) && !string.IsNullOrEmpty(city))
+                    {
+                        var addQuery = "INSERT INTO ClientTable (Name, Surname, Country, City, Tel, Cargo) " +
+                                                    "VALUES (@name, @surname, @country, @city, @tel, @cargo)";
+
+                        SqlCommand command = new SqlCommand(addQuery, connect);
+
+                        command.Parameters.AddWithValue("@name", name);
+                        command.Parameters.AddWithValue("@surname", surname);
+                        command.Parameters.AddWithValue("@country", country);
+                        command.Parameters.AddWithValue("@city", city);
+                        command.Parameters.AddWithValue("@tel", tel);
+                        command.Parameters.AddWithValue("@cargo", cargo);
+
+                        if (command.ExecuteNonQuery() == 1)
+                        {
+                            var result = MessageBox.Show($"Client {name} {surname} added successfully!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            if (result == DialogResult.OK)
+                            {
+                                ClearTextBox();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    connect.Close();
+                }
+            }
+        }
+
+        private void Edit()        //метод для изменения в бд данных о клиенте
+        {
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
-                 connect.OpenAsync();
+                connect.OpenAsync();
 
                 if (!string.IsNullOrEmpty(txt_Name.Text) && !string.IsNullOrWhiteSpace(txt_Name.Text)
                 && !string.IsNullOrEmpty(txt_Surname.Text) && !string.IsNullOrWhiteSpace(txt_Surname.Text)
                 && !string.IsNullOrEmpty(txt_City.Text) && !string.IsNullOrWhiteSpace(txt_City.Text))
                 {
-                   
 
                     string editQuery = "UPDATE ClientTable " +
                                                           "SET [Name]=@Name, [Surname]=@Surname, " +
@@ -186,22 +227,14 @@ namespace FinalOrder
                     command.Parameters.AddWithValue("Tel", txt_Tel.Text);
                     command.Parameters.AddWithValue("Cargo", txt_Cargo.Text);
 
-
-                     command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
                 connect.Close();
             }
         }
 
-        private void btn_Del_Client_Click(object sender, EventArgs e)
+        private async void Del()   //метод для удаления клиента из бд
         {
-            Del();
-            RefreshClintsDgv(dgv_Clients);
-        }
-
-        private async void Del()
-        {
-
             using (SqlConnection connect = new SqlConnection(connectionString))
             {
                 await connect.OpenAsync();
@@ -214,15 +247,55 @@ namespace FinalOrder
                     SqlCommand command = new SqlCommand(delQuery, connect);
                     command.Parameters.AddWithValue("id", txt_Id.Text);
 
-                    var result = MessageBox.Show("Вы действительно хотите удалить данного клиента?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var result = MessageBox.Show("Are you sure you want to delete this client?", "Attention!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                     if (result == DialogResult.Yes)
                         await command.ExecuteNonQueryAsync();
-
                 }
                 connect.Close();
             }
+        }
 
+
+        private Boolean CheckClient()    //проверка на наличие клиента
+        {
+            using (SqlConnection connect = new SqlConnection(connectionString))
+            {
+                connect.Open();
+                var client_Name = txt_Name.Text;
+                var client_Surname = txt_Surname.Text;
+                var client_City = txt_City.Text;
+
+
+                SqlDataAdapter adapter = new SqlDataAdapter();
+                DataTable table = new DataTable();
+                string querystring = $"SELECT Name, Surname, City FROM ClientTable WHERE Name = '{client_Name}' AND Surname = '{client_Surname}'AND City = '{client_City}'";
+                SqlCommand command = new SqlCommand(querystring, connect);
+
+                adapter.SelectCommand = command;
+                adapter.Fill(table);
+                if (table.Rows.Count > 0)
+                {
+                    MessageBox.Show("Error! This client is already registered!", "Attention!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        private void ClearTextBox()      //очистка всех текстбоксов
+        {
+            txt_Id.Clear();
+            txt_Name.Clear();
+            txt_Surname.Clear();
+            txt_Country.Clear();
+            txt_City.Clear();
+            txt_Tel.Clear();
+            txt_Cargo.Clear();
+            txt_Search.Clear();
         }
     }
 }
