@@ -1,0 +1,16 @@
+D:\Files\NursaceOrder\bin\Debug\FinalOrder.exe.config
+D:\Files\NursaceOrder\bin\Debug\FinalOrder.exe
+D:\Files\NursaceOrder\bin\Debug\FinalOrder.pdb
+D:\Files\NursaceOrder\bin\Debug\BouncyCastle.Crypto.dll
+D:\Files\NursaceOrder\bin\Debug\itextsharp.dll
+D:\Files\NursaceOrder\bin\Debug\itextsharp.xml
+D:\Files\NursaceOrder\obj\Debug\NursaceOrder.csproj.AssemblyReference.cache
+D:\Files\NursaceOrder\obj\Debug\NursaceOrder.csproj.SuggestedBindingRedirects.cache
+D:\Files\NursaceOrder\obj\Debug\FinalOrder.ClientsForm.resources
+D:\Files\NursaceOrder\obj\Debug\FinalOrder.Form1.resources
+D:\Files\NursaceOrder\obj\Debug\FinalOrder.Properties.Resources.resources
+D:\Files\NursaceOrder\obj\Debug\NursaceOrder.csproj.GenerateResource.cache
+D:\Files\NursaceOrder\obj\Debug\NursaceOrder.csproj.CoreCompileInputs.cache
+D:\Files\NursaceOrder\obj\Debug\NursaceOrder.csproj.CopyComplete
+D:\Files\NursaceOrder\obj\Debug\FinalOrder.exe
+D:\Files\NursaceOrder\obj\Debug\FinalOrder.pdb
