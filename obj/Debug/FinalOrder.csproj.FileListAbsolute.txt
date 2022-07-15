@@ -1,0 +1,16 @@
+D:\Files\FinalOrder\bin\Debug\FinalOrder.exe.config
+D:\Files\FinalOrder\bin\Debug\FinalOrder.exe
+D:\Files\FinalOrder\bin\Debug\FinalOrder.pdb
+D:\Files\FinalOrder\obj\Debug\FinalOrder.csproj.AssemblyReference.cache
+D:\Files\FinalOrder\obj\Debug\FinalOrder.csproj.SuggestedBindingRedirects.cache
+D:\Files\FinalOrder\obj\Debug\FinalOrder.Form1.resources
+D:\Files\FinalOrder\obj\Debug\FinalOrder.Properties.Resources.resources
+D:\Files\FinalOrder\obj\Debug\FinalOrder.csproj.GenerateResource.cache
+D:\Files\FinalOrder\obj\Debug\FinalOrder.csproj.CoreCompileInputs.cache
+D:\Files\FinalOrder\obj\Debug\FinalOrder.exe
+D:\Files\FinalOrder\obj\Debug\FinalOrder.pdb
+D:\Files\FinalOrder\obj\Debug\FinalOrder.ClientsForm.resources
+D:\Files\FinalOrder\bin\Debug\BouncyCastle.Crypto.dll
+D:\Files\FinalOrder\bin\Debug\itextsharp.dll
+D:\Files\FinalOrder\bin\Debug\itextsharp.xml
+D:\Files\FinalOrder\obj\Debug\FinalOrder.csproj.CopyComplete
